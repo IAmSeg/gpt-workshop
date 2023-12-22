@@ -1,4 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -9,10 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { thread_id } = req.query;
 
-    // TODO: Call OpenAI API to list messages for a thread
-    // TODO: Respond with the recent message object (index 0)
+    const threadMessages = await openai.beta.threads.messages.list(
+      thread_id as string
+    );
 
-    res.status(500).send('Not implemented');
+    res.status(200).json(threadMessages.data[0]);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred' });
   }

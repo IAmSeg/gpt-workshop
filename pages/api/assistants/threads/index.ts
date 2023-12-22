@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { config } from 'dotenv';
 import { Message } from '@/types/chat';
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 config();
         
@@ -18,10 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    // TODO: Call OpenAI API to create a new thread
-    // TODO: Respond with the thread_id (only id, not object)
-
-    res.status(500).send('Not implemented');
+    const emptyThread = await openai.beta.threads.create();
+    res.status(200).json(emptyThread.id);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred' });
   }

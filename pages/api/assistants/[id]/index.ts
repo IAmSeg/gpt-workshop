@@ -1,11 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Assistant } from "openai/resources/beta/assistants/assistants";
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function validateAssistant(assistant_id: string): Promise<Assistant | boolean> {
-  // TODO: Retrieve the assistant with the given assistant ID
-  // TODO Return the assistant object
+  const myAssistant = await openai.beta.assistants.retrieve(
+    assistant_id
+  );
 
-  throw new Error('Not implemented');
+  return myAssistant;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

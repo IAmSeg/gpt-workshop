@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Thread } from "openai/resources/beta/threads/threads";
+import OpenAI from 'openai';
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function validateThread(thread_id: string): Promise<Thread | boolean> {
-  // TODO: Retrieve the thread with the given thread ID
-  // TODO Return the thread object
-
-  throw new Error('Not implemented');
+  const myThread = await openai.beta.threads.retrieve(
+    thread_id
+  );
+  return myThread;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

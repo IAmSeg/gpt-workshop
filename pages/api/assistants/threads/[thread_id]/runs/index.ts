@@ -4,28 +4,36 @@ import { Message } from '@/types/chat';
 import { Assistant } from 'openai/resources/beta/assistants/assistants';
 import { Thread } from 'openai/resources/beta/threads/threads';
 import { ThreadMessage } from 'openai/resources/beta/threads/messages/messages';
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 config(); // Load environment variables from .env.local file
 
 async function validateAssistant(assistant_id: string): Promise<Assistant | boolean> {
-  // TODO: Retrieve the assistant with the given assistant ID
-  // TODO Return the assistant object
+  const myAssistant = await openai.beta.assistants.retrieve(
+    assistant_id
+  );
 
-  throw new Error('Not implemented');
+  return myAssistant;
 }
 
 async function validateThread(thread_id: string): Promise<Thread | boolean> {
-  // TODO: Retrieve the thread with the given thread ID
-  // TODO Return the thread object
+  const myThread = await openai.beta.threads.retrieve(
+    thread_id
+  );
+  return myThread;
 
   throw new Error('Not implemented');
 }
 
 async function createMessage(thread_id: string, message: Message): Promise<ThreadMessage | boolean> {
-  // TODO: Create a new message in the given thread with the given message data
-  // TODO Return the message object
+  const threadMessage = await openai.beta.threads.messages.create(
+    thread_id,
+    { role: "user", content: message.content }
+  );
 
-  throw new Error('Not implemented');
+  return threadMessage;
 }
         
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -55,7 +63,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     message && await createMessage(thread_id as string, message);
 
     // TODO: Call OpenAI API to create a new run on the given thread
-    // TODO: Respond with created run object
+    const run = await openai.beta.threads.runs.create(
+      thread_id as string,
+      { assistant_id: assistant_id }
+    );
+    return run;
 
     res.status(500).send('Not implemented');
   } catch (error) {

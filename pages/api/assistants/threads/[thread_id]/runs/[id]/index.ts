@@ -1,11 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Run } from "openai/resources/beta/threads/runs/runs";
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function validateRun(thread_id: string, run_id: string): Promise<Run | boolean> {
-  // TODO: Retrieve the run with the given run ID
-  // TODO Return the run object
+  const run = await openai.beta.threads.runs.retrieve(
+    thread_id,
+    run_id
+  );
 
-  throw new Error('Not implemented');
+  return run;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
