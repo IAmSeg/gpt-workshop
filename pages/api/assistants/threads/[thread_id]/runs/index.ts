@@ -67,9 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       thread_id as string,
       { assistant_id: assistant_id }
     );
-    return run;
 
-    res.status(500).send('Not implemented');
+    res.status(200).json(run);
   } catch (error) {
     res.status(500).json({ error: error });
   }
